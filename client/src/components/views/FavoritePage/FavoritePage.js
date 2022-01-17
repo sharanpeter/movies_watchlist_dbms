@@ -6,7 +6,7 @@ import './favorite.css';
 import { useSelector } from 'react-redux';
 import { IMAGE_BASE_URL, POSTER_SIZE } from '../../Config'
 import GridCard from '../../commons/GridCards'
-
+let responseFav=0
 const { Title } = Typography;
 
 function FavoritePage(props) {
@@ -16,6 +16,7 @@ function FavoritePage(props) {
     const [Movie, setMovie] = useState([])
     const [Movies, setMovies] = useState([])
     const [Casts, setCasts] = useState([])
+ 
     const [Favorites, setFavorites] = useState([])
     const [LoadingForMovie, setLoadingForMovie] = useState(true)
     const [LoadingForCasts, setLoadingForCasts] = useState(true)
@@ -30,6 +31,8 @@ function FavoritePage(props) {
     const fetchFavoredMovie = () => {
         axios.post('/api/favorite/getFavoredMovie', variable)
             .then(response => {
+
+                responseFav=response.data.favorites.length
                 
                 if(response.data.favorites.length>0){
                 response.data.favorites[0].genreId.forEach(genre=>{
@@ -133,7 +136,7 @@ function FavoritePage(props) {
            
 
         
-       { genreId.length>0 &&  
+       { responseFav>0 &&  
          <div style={{ width: '85%', margin: '1rem auto' }}>
 
             <Title level={2} > Movies based on your watchlist</Title>
