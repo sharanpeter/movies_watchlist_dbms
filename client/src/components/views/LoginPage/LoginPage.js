@@ -53,11 +53,11 @@ function LoginPage(props) {
                 }
                 props.history.push("/");
               } else {
-                setFormErrorMessage('Check out your Account or Password again')
+                setFormErrorMessage('Check your Email or Password again')
               }
             })
             .catch(err => {
-              setFormErrorMessage('Check out your Account or Password again')
+              setFormErrorMessage('Check your Email or Password again')
               setTimeout(() => {
                 setFormErrorMessage("")
               }, 3000);

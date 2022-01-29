@@ -4,8 +4,10 @@ import { API_URL, API_KEY} from '../../Config'
 import axios from 'axios';
 import './favorite.css';
 import { useSelector } from 'react-redux';
+
 import { IMAGE_BASE_URL, POSTER_SIZE } from '../../Config'
 import GridCard from '../../commons/GridCards'
+import { Link } from 'react-router-dom';
 let responseFav=0
 const { Title } = Typography;
 
@@ -18,6 +20,7 @@ function FavoritePage(props) {
     const [Casts, setCasts] = useState([])
  
     const [Favorites, setFavorites] = useState([])
+    const [movieRemoved, setMovieremoved] = useState(false)
     const [LoadingForMovie, setLoadingForMovie] = useState(true)
     const [LoadingForCasts, setLoadingForCasts] = useState(true)
     const [Loading, setLoading] = useState(true)
@@ -27,6 +30,10 @@ function FavoritePage(props) {
         fetchFavoredMovie()
       
     }, [])
+    useEffect(() => {
+        fetchFavoredMovie()
+      
+    }, [movieRemoved])
 
     const fetchFavoredMovie = () => {
         axios.post('/api/favorite/getFavoredMovie', variable)
@@ -35,11 +42,16 @@ function FavoritePage(props) {
                 responseFav=response.data.favorites.length
                 
                 if(response.data.favorites.length>0){
-                response.data.favorites[0].genreId.forEach(genre=>{
-                    genreId.push(genre.id)
+                response.data.favorites.forEach(fav=>{
+                    genreId.push(fav.genreId[0].id)
                 })
-                let genreMovies = `${API_URL}discover/movie?api_key=${API_KEY}&language=en-US&sort_by=vote_count.desc&with_genres=${genreId[0]},${genreId[1]},${genreId[2]}`
+
+                // for(let i in responseFav){
+                    console.log("hi"+genreId)
+                    let genreMovies = `${API_URL}discover/movie?api_key=${API_KEY}&language=en-US&sort_by=vote_count.desc&with_genres=${genreId[0]},${genreId[1]},${genreId[2]}`
                 fetchMovies(genreMovies)
+                // }
+                
             }
                 
                 if (response.data.success) {
@@ -60,7 +72,7 @@ function FavoritePage(props) {
                 // console.log(result)
                 // console.log('Movies',...Movies)
                 // console.log('result',...result.results)
-                setMovies([...Movies, ...result.results])
+                setMovies([...result.results])
                 // setMainMovieImage(MainMovieImage || result.results[0])
                 // setCurrentPage(result.page)
             }, setLoading(false))
@@ -78,6 +90,7 @@ function FavoritePage(props) {
             .then(response => {
                 if (response.data.success) {
                     fetchFavoredMovie()
+                    setMovieremoved(true)
                 } else {
                     alert('Failed to Remove From Favorite')
                 }
@@ -109,7 +122,7 @@ function FavoritePage(props) {
 
     return (
         <div style={{ width: '85%', margin: '3rem auto' }}>
-            <Title level={2} > Favorite Movies By Me </Title>
+            <Title level={2} > My Favorites Watchlist </Title>
             <hr />
             {user.userData && !user.userData.isAuth ?
                 <div style={{ width: '100%', fontSize: '2rem', height: '500px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
@@ -136,7 +149,7 @@ function FavoritePage(props) {
            
 
         
-       { responseFav>0 &&  
+       { responseFav>0 ?
          <div style={{ width: '85%', margin: '1rem auto' }}>
 
             <Title level={2} > Movies based on your watchlist</Title>
@@ -163,6 +176,12 @@ function FavoritePage(props) {
                 <button ref={buttonRef} className="loadMore" onClick={loadMoreItems}>Load More</button>
             </div> */}
         </div> 
+
+        :
+        <div className='empty'>
+        <h2>Your Watchlist is Empty</h2>
+         <Button><Link to={"/"}>Add movies</Link></Button>
+         </div>
        }
     
         </div>
