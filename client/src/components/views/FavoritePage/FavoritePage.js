@@ -46,11 +46,11 @@ function FavoritePage(props) {
                     genreId.push(fav.genreId[0].id)
                 })
 
-                // for(let i in responseFav){
+       
                     console.log("hi"+genreId)
-                    let genreMovies = `${API_URL}discover/movie?api_key=${API_KEY}&language=en-US&sort_by=vote_count.desc&with_genres=${genreId[0]},${genreId[1]},${genreId[2]}`
+                    let genreMovies = `${API_URL}discover/movie?api_key=${API_KEY}&language=en-US&sort_by=vote_count.desc&with_genres=${genreId[0]},${genreId[1]},${genreId[2]},${genreId[3]},${genreId[4]},${genreId[5]},${genreId[6]},${genreId[7]},${genreId[8]},${genreId[9]},${genreId[10]},${genreId[11]},${genreId[12]}`
                 fetchMovies(genreMovies)
-                // }
+                
                 
             }
                 
@@ -69,12 +69,9 @@ function FavoritePage(props) {
         fetch(endpoint)
             .then(result => result.json())
             .then(result => {
-                // console.log(result)
-                // console.log('Movies',...Movies)
-                // console.log('result',...result.results)
+               
                 setMovies([...result.results])
-                // setMainMovieImage(MainMovieImage || result.results[0])
-                // setCurrentPage(result.page)
+                
             }, setLoading(false))
             .catch(error => console.error('Error:', error)
             )
@@ -149,10 +146,13 @@ function FavoritePage(props) {
            
 
         
-       { responseFav>0 ?
+       { user.userData && !user.userData.isAuth ?
+                <></>
+                :
+            responseFav>0 ?
          <div style={{ width: '85%', margin: '1rem auto' }}>
 
-            <Title level={2} > Movies based on your watchlist</Title>
+            <Title level={2} > Recommended movies based on your watchlist</Title>
             <hr />
             <Row gutter={[16, 16]}>
                 {Movies && Movies.map((movie, index) => (
@@ -172,9 +172,7 @@ function FavoritePage(props) {
                 <div>Loading...</div>}
 
             <br />
-            {/* <div style={{ display: 'flex', justifyContent: 'center' }}>
-                <button ref={buttonRef} className="loadMore" onClick={loadMoreItems}>Load More</button>
-            </div> */}
+           
         </div> 
 
         :
